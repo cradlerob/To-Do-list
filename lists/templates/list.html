@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header_text %}{{tittle}}{% endblock %}
+
+<form method="POST" action="">
+                    {{ form.text }}
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        <div class="form-group has-error">
+                            <div class="help-block">{{ form.text.errors }}</div>
+                        </div>
+                    {% endif %}
+
+                </form>
+    <div class="btn-group">
+                    <a class="btn btn-submit" name="add" href="#" onclick="window.location='{% url "add_item" pk=pk %}'">
+                        <i class="icon_check_alt2"></i>add
+                    </a>
+                    </div>
+{% block table %}
+    <table id="id_list_table" class="table">
+        {% for item in list_ %}
+            <tr><td>{{ forloop.counter }}: {{ item }}</td></tr>
+        {% endfor %}
+    </table>
+{% endblock %}
