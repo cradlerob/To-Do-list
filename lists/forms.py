@@ -7,7 +7,7 @@ class ItemForm (forms.models.ModelForm):
                 'placeholder': 'Enter a new item',}),)
     class Meta:
         model = Item
-        fields = ('text_item',)
+        fields = ('text_item','list')
         exclude=('list',)
 
 
@@ -15,7 +15,7 @@ class EditItemForm(ItemForm):
     text_item = forms.CharField( max_length = 120)
     class Meta:
         model = Item
-        fields = ('text_item',)
+        fields = ('text_item','list')
 
         exclude=('list',)
 

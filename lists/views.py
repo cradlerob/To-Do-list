@@ -15,8 +15,7 @@ def home_page(request):
 
 def view_list(request, pk):
     list_=List.objects.get(pk=pk)
-    items = Item.objects.filter(list = list_).order_by('id')
-    return render(request, 'list.html', {'lists': items , 'tittle' : list_.name , 'primary' : list_.id })
+    return render(request, 'list.html', {'lists': list_ , 'tittle' : list_.name , 'primary' : list_.id })
 
 
 def new_list(request):
@@ -58,16 +57,11 @@ def add_item(request,pk):
         form=ItemForm(request.POST)
         if form.is_valid():
             item = Item(list=list_)
+            item.text_item = form.cleaned_data['text_item']
             item.save()
-            item.text_item=form.cleaned_data['text_item']
-            #item= Item.objects.create(
-             #   text=form.cleaned_data['text'],
-              #  list=list_,
-            #)
-            item.save()
+
             return redirect('/lists/'+pk+'/view/')
     else:
-        print('else')
         form=ItemForm()
     return render(request, 'addItem.html', {'form': form, 'function': 'Add'})
 
