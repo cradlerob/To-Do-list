@@ -22,7 +22,7 @@
 <div class="table-responsive">
     <table class="table table-striped" name="tabla">
         <tr>
-            <th>Tittle</th>
+            <th><h2><center>Tittle</center></h2></th>
         </tr>
 
             {% for list in lists %}
@@ -32,6 +32,9 @@
                 <div class="btn-group">
                     <a class="btn btn-success" name="view" href="#" onclick="window.location='{% url "view_list" pk=list.id %}'">
                         <i class="icon_check_alt2"></i>View
+                    </a>
+                    <a class="btn btn-danger" name="delete" href="#" onclick="window.location='{% url "delete_list" pk=list.id %}'">
+                        <i class="icon_close_alt2"></i>Delete
                     </a>
                     </div>
             </td>

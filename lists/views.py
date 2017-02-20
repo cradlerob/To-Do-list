@@ -14,11 +14,9 @@ def home_page(request):
 
 
 def view_list(request, pk):
-    form = ItemForm()
     list_=List.objects.get(pk=pk)
-    name=list_.name
-    items = Item.objects.filter(list = list_)
-    return render(request, 'list.html', {'list': items , 'tittle' : name ,'form' : form })
+    items = Item.objects.filter(list = list_).order_by('id')
+    return render(request, 'list.html', {'lists': items , 'tittle' : list_.name , 'primary' : list_.id })
 
 
 def new_list(request):
@@ -28,7 +26,7 @@ def new_list(request):
         if form.is_valid():
             form.save()
             status='Guardado Con exito'
-            url(r'^new$', views.new_list, name='new_list'),
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     else:
         form = ListForm()
@@ -37,39 +35,47 @@ def new_list(request):
 
 def edit_item_list(request,pk):
     item = Item.objects.get(pk=pk)
+    list=item.list
     if request.method=='POST':
         form=EditItemForm(request.POST,instance=item)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            return redirect('/lists/' + str(list.id) + '/view/')
     else:
         form=EditItemForm(instance=item)
-    return render(request,'list.html',{'form':form , 'tittle' : item.list.name})
+    return render(request,'additem.html',{'form':form , 'function' : 'Edit'})
 
 
 def delete_item_list(request,pk):
-    item = Item.object.get(pk)
+    item = Item.objects.get(pk=pk)
     list =item.list
     item.delete()
-    return redirect('/lists/'+list.id+'/view')
+    return redirect('/lists/'+str(list.id)+'/view/')
 
 def add_item(request,pk):
     list_ = List.objects.get(pk=pk)
-    print(request.method)
     if request.method=='POST':
-        print('post')
-
         form=ItemForm(request.POST)
         if form.is_valid():
-            print('valid')
-            item_text = request.POST.get('text', '')
-            item= Item.objects.create(
-                text=item_text,
-                list=list_,
-            )
+            item = Item(list=list_)
             item.save()
-            print ('save')
-            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            item.text_item=form.cleaned_data['text_item']
+            #item= Item.objects.create(
+             #   text=form.cleaned_data['text'],
+              #  list=list_,
+            #)
+            item.save()
+            return redirect('/lists/'+pk+'/view/')
     else:
+        print('else')
         form=ItemForm()
-    return render(request,'list.html',{'form':form,'tittle':list_.name})
+    return render(request, 'addItem.html', {'form': form, 'function': 'Add'})
+
+
+def delete_list(request,pk):
+
+    list = List.objects.get(pk=pk)
+    list.delete()
+
+    return redirect('/')
+
